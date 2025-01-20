@@ -158,6 +158,27 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.get("/get-user-name", async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    if (!email || typeof email !== "string") {
+      return res.status(400).json({ error: "Valid email is required" });
+    }
+
+    const user = await User.findOne({ email }).select("name").lean();
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({ name: user.name });
+  } catch (err) {
+    console.error("Error fetching user by email:", err.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.post("/add-child", async (req, res) => {
   const { supportEmail, childEmail } = req.body;
 
