@@ -6,9 +6,7 @@ const cors = require("cors");
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-  origin: '*'
-}));
+app.use(cors());
 
 const PORT = process.env.PORT || 5000;
 
@@ -1009,3 +1007,6 @@ app.get("/get-mood-trend", async (req, res) => {
 
 // Start Server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+module.exports = app;
+
