@@ -7,12 +7,20 @@ const cors = require("cors");
 const app = express();
 app.use(express.json());
 // app.use(cors());
+// Apply CORS globally
 app.use(cors({
-  origin: '*', // Replace '*' with your Flutter app's origin in production
+  origin: '*', // Replace '*' with specific origins in production
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-app.options('*', cors());
+
+// Handle preflight OPTIONS requests explicitly
+app.options('*', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Update with specific origins in production
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.sendStatus(204); // No Content
+});
 
 const PORT = process.env.PORT || 5000;
 
