@@ -7,7 +7,6 @@ const cors = require("cors");
 const app = express();
 app.use(express.json());
 // app.use(cors());
-const cors = require('cors');
 app.use(cors({
   origin: '*', // Replace '*' with your Flutter app's origin in production
   methods: ['GET', 'POST', 'OPTIONS'],
