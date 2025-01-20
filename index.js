@@ -122,29 +122,35 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    res.status(200).json({ userType: user.userType });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
+app.post('/login', (req, res) => {
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
+  res.status(200).json({ message: 'Debugging' });
 });
+
+// app.post("/login", async (req, res) => {
+//   const { email, password } = req.body;
+
+//   if (!email || !password) {
+//     return res.status(400).json({ message: "All fields are required" });
+//   }
+
+//   try {
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     const isPasswordValid = await bcrypt.compare(password, user.password);
+//     if (!isPasswordValid) {
+//       return res.status(400).json({ message: "Invalid credentials" });
+//     }
+
+//     res.status(200).json({ userType: user.userType });
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error", error: error.message });
+//   }
+// });
 
 app.post("/add-child", async (req, res) => {
   const { supportEmail, childEmail } = req.body;
@@ -1009,4 +1015,3 @@ app.get("/get-mood-trend", async (req, res) => {
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 module.exports = app;
-
