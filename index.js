@@ -134,46 +134,29 @@ app.get('/test', (req, res) => {
   res.status(200).send('Test route is working!');
 });
 
-app.post('/login', (req, res) => {
-  console.log('Headers:', req.headers);
-  console.log('Body:', req.body);
-
-  if (!req.body || Object.keys(req.body).length === 0) {
-    return res.status(400).json({ message: 'Request body is missing or empty' });
-  }
-
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  // Example response to confirm functionality
-  res.status(200).json({
-    message: 'Request received successfully',
-    data: { email, password },
-  });
+  if (!email || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    res.status(200).json({ userType: user.userType });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 });
-
-// app.post("/login", async (req, res) => {
-//   const { email, password } = req.body;
-
-//   if (!email || !password) {
-//     return res.status(400).json({ message: "All fields are required" });
-//   }
-
-//   try {
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-//     if (!isPasswordValid) {
-//       return res.status(400).json({ message: "Invalid credentials" });
-//     }
-
-//     res.status(200).json({ userType: user.userType });
-//   } catch (error) {
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// });
 
 app.post("/add-child", async (req, res) => {
   const { supportEmail, childEmail } = req.body;
