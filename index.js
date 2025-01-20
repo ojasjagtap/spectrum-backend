@@ -6,13 +6,7 @@ const cors = require("cors");
 
 const app = express();
 app.use(express.json());
-// app.use(cors());
-// Apply CORS globally
-app.use(cors({
-  origin: '*', // Replace '*' with specific origins in production
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(cors());
 
 // Handle preflight OPTIONS requests explicitly
 app.options('*', (req, res) => {
@@ -1025,5 +1019,3 @@ app.get("/get-mood-trend", async (req, res) => {
 
 // Start Server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-module.exports = app;
