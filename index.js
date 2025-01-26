@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
@@ -139,7 +140,13 @@ app.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    res.status(200).json({ userType: user.userType });
+    const token = jwt.sign(
+      { userId: user._id, email: user.email, userType: user.userType },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({ token, userType: user.userType });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
